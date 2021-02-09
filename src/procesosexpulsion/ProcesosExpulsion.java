@@ -76,7 +76,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         this.getContentPane().setBackground(Color.GRAY);
         
         c.add(label1);
-        c.add(label2);
+//        c.add(label2);
         c.add(label3);
         c.add(label4);
         c.add(label5);
@@ -105,35 +105,35 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         
         scrollPane.setBounds(50, 40, 2500, 2500);
         scrollPane.setPreferredSize(new Dimension(2500, 2500));  
-        scrollPane.setBackground(Color.lightGray);
+        scrollPane.setBackground(Color.WHITE);
         
         scrollPane1.setBounds(50, 40, 700, 230);
         scrollPane1.setPreferredSize(new Dimension(1150, 400)); 
-        scrollPane1.setBackground(Color.lightGray);
+        scrollPane1.setBackground(Color.WHITE);
         
         scrollPane2.setBounds(50, 300, 2500, 2500);
         scrollPane2.setPreferredSize(new Dimension(2500, 2500));  
-        scrollPane2.setBackground(Color.lightGray);
+        scrollPane2.setBackground(Color.WHITE);
         
         scrollPane3.setBounds(50, 300, 700, 350);
         scrollPane3.setPreferredSize(new Dimension(1150, 400)); 
-        scrollPane3.setBackground(Color.lightGray);
+        scrollPane3.setBackground(Color.WHITE);
         
         scrollPane2.setBounds(50, 300, 2500, 2500);
         scrollPane2.setPreferredSize(new Dimension(2500, 2500));  
-        scrollPane2.setBackground(Color.lightGray);
+        scrollPane2.setBackground(Color.WHITE);
         
         scrollPane3.setBounds(50, 300, 700, 350);
         scrollPane3.setPreferredSize(new Dimension(700, 350)); 
-        scrollPane3.setBackground(Color.lightGray);
+        scrollPane3.setBackground(Color.WHITE);
         
         scrollPane4.setBounds(800, 300, 500, 1000);
         scrollPane4.setPreferredSize(new Dimension(500, 1000));  
-        scrollPane4.setBackground(Color.lightGray);
+        scrollPane4.setBackground(Color.WHITE);
         
         scrollPane5.setBounds(800, 300, 350, 350);
         scrollPane5.setPreferredSize(new Dimension(350, 350)); 
-        scrollPane5.setBackground(Color.lightGray);
+        scrollPane5.setBackground(Color.WHITE);
         
         tfNombre.setBounds(930, 40, 70, 20);
         
@@ -282,20 +282,20 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         for(int i = 0; i<100; i++){
             
             diagrama[0][i] = new JLabel(Integer.toString(i));
-            diagrama[0][i].setBounds(20 + (i*20), 20, 20, 20);
+            diagrama[0][i].setBounds(40 + (i*20), 20, 20, 20);
 
             scrollPane2.add(diagrama[0][i]);
             
         }
         
         diagrama[nodoEjecutado.getIndice()][0] = new JLabel("  " + nombre);
-        diagrama[nodoEjecutado.getIndice()][0].setBounds(0, 20 + (nodoEjecutado.getIndice()*20), 30, 20);
+        diagrama[nodoEjecutado.getIndice()][0].setBounds(0, 20 + (nodoEjecutado.getIndice()*20), 50, 20);
         
         scrollPane2.add(diagrama[nodoEjecutado.getIndice()][0]);
         
         JLabel img = new JLabel();
         
-        ImageIcon imgIcon = new ImageIcon(getClass().getResource("barra.jpg"));
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("barra.png"));
 
         Image imgEscalada = imgIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         Icon iconoEscalado = new ImageIcon(imgEscalada);
@@ -315,7 +315,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         }
         
         diagrama[nodoEjecutado.getIndice()][coorX+1] = new JLabel();
-        diagrama[nodoEjecutado.getIndice()][coorX+1].setBounds(20 + (coorX*20), 20 + (nodoEjecutado.getIndice()*20), 20, 20);
+        diagrama[nodoEjecutado.getIndice()][coorX+1].setBounds(40 + (coorX*20), 20 + (nodoEjecutado.getIndice()*20), 20, 20);
         diagrama[nodoEjecutado.getIndice()][coorX+1].setIcon(iconoEscalado);
         
         scrollPane2.add(diagrama[nodoEjecutado.getIndice()][coorX+1]);
