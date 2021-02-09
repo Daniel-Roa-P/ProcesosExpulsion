@@ -38,6 +38,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
     JLabel label5 = new JLabel("Tabla de procesos:");
     JLabel label6 = new JLabel("Diagrama de Gant:");
     JLabel label7 = new JLabel("Tabla de Bloqueados:");
+    JLabel label8 = new JLabel("Rafaga restante del proceso: 0");
     
     JButton botonIngresar = new JButton("Ingresar proceso");
     JButton botonIniciar = new JButton("Iniciar ejecucion");
@@ -54,7 +55,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
     
     int filas = 0, rafagaTemporal;
     int tiempoGlobal = 0;
-    int coorX = 0, coorY = 1;
+    int coorX = 0;
     
     Thread procesos;
     
@@ -81,6 +82,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         c.add(label5);
         c.add(label6);
         c.add(label7);
+        c.add(label8);
         c.add(semaforo);
         
         c.add(scrollPane1);
@@ -99,6 +101,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         label5.setBounds(50, 20, 300, 20);
         label6.setBounds(50, 280, 300, 20);
         label7.setBounds(800, 280, 300, 20);
+        label8.setBounds(800, 265, 300, 20);
         
         scrollPane.setBounds(50, 40, 2500, 2500);
         scrollPane.setPreferredSize(new Dimension(2500, 2500));  
@@ -285,10 +288,10 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
             
         }
         
-        diagrama[coorY][0] = new JLabel("  " + nombre);
-        diagrama[coorY][0].setBounds(0, 20 + (coorY*20), 30, 20);
+        diagrama[nodoEjecutado.getIndice()][0] = new JLabel("  " + nombre);
+        diagrama[nodoEjecutado.getIndice()][0].setBounds(0, 20 + (nodoEjecutado.getIndice()*20), 30, 20);
         
-        scrollPane2.add(diagrama[coorY][0]);
+        scrollPane2.add(diagrama[nodoEjecutado.getIndice()][0]);
         
         JLabel img = new JLabel();
         
@@ -297,7 +300,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         Image imgEscalada = imgIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         Icon iconoEscalado = new ImageIcon(imgEscalada);
         
-        for(int i = 1; i < coorY+1; i++){
+        for(int i = 1; i < filas + 1; i++){
             
             for(int j = 0; j < coorX+1; j++){
                 
@@ -311,11 +314,11 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
             
         }
         
-        diagrama[coorY][coorX+1] = new JLabel();
-        diagrama[coorY][coorX+1].setBounds(20 + (coorX*20), 20 + (coorY*20), 20, 20);
-        diagrama[coorY][coorX+1].setIcon(iconoEscalado);
+        diagrama[nodoEjecutado.getIndice()][coorX+1] = new JLabel();
+        diagrama[nodoEjecutado.getIndice()][coorX+1].setBounds(20 + (coorX*20), 20 + (nodoEjecutado.getIndice()*20), 20, 20);
+        diagrama[nodoEjecutado.getIndice()][coorX+1].setIcon(iconoEscalado);
         
-        scrollPane2.add(diagrama[coorY][coorX+1]);
+        scrollPane2.add(diagrama[nodoEjecutado.getIndice()][coorX+1]);
         
         scrollPane2.repaint();
         scrollPane3.setViewportView(scrollPane2);
@@ -378,8 +381,9 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
                     
                     label3.setText("Proceso en ejecucion: " + nodoEjecutado.getLlave());
                     label4.setText("Tiempo: " + String.valueOf(tiempoGlobal) + " Segundos.");
+                    label8.setText("Rafaga restante del proceso: " + nodoEjecutado.getRafaga());
                     
-                    dibujarDiagrama(nodoEjecutado.getLlave(), coorX, coorY);
+                    dibujarDiagrama(nodoEjecutado.getLlave(), coorX, nodoEjecutado.getIndice());
                     llenarBloqueados();
                     
                     tiempoGlobal++;
@@ -403,14 +407,12 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
                     
                 } else if (tiempoEjecutado == 4){
                 
-                    cola.getCabeza().setLlave(cola.getCabeza().getLlave() + "*");
+                    cola.getCabeza().setLlave(cola.getCabeza().getLlave());
                     cola.intercambiar(cola.getCabeza());
                     
                 }
-                
-                
+                               
                 llenarBloqueados();
-                coorY++;
                 
             }
 
