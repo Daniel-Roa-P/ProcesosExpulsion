@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -32,7 +33,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
     JLabel semaforo = new JLabel();
     
     JLabel label1 = new JLabel("Nombre del proceso: ");
-    JLabel label2 = new JLabel("Prioridad del proceso:");
+    JLabel label2 = new JLabel("Limite de ejecucion: 4");
     JLabel label3 = new JLabel("Proceso en ejecucion: Ninguno");
     JLabel label4 = new JLabel("Tiempo: ");
     JLabel label5 = new JLabel("Tabla de procesos:");
@@ -42,6 +43,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
     
     JButton botonIngresar = new JButton("Ingresar proceso");
     JButton botonIniciar = new JButton("Iniciar ejecucion");
+    JButton botonBloquear = new JButton("Bloquear proceso");
     
     JTextField tfNombre = new JTextField("P1");
     
@@ -76,7 +78,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         this.getContentPane().setBackground(Color.GRAY);
         
         c.add(label1);
-//        c.add(label2);
+        c.add(label2);
         c.add(label3);
         c.add(label4);
         c.add(label5);
@@ -91,6 +93,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         
         c.add(botonIngresar);
         c.add(botonIniciar);
+        c.add(botonBloquear);
         
         c.add(tfNombre);
         
@@ -138,12 +141,16 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         tfNombre.setBounds(930, 40, 70, 20);
         
         botonIngresar.addActionListener(this);
-        botonIngresar.setBounds(800, 100, 200, 60);
+        botonIngresar.setBounds(800, 100, 200, 40);
         botonIngresar.setBackground(Color.CYAN);
         
         botonIniciar.addActionListener(this);
-        botonIniciar.setBounds(800, 180, 200, 60);
+        botonIniciar.setBounds(800, 150, 200, 40);
         botonIniciar.setBackground(Color.GREEN);
+        
+        botonBloquear.addActionListener(this);
+        botonBloquear.setBounds(800, 200, 200, 40);
+        botonBloquear.setBackground(Color.RED);
         
         dibujarSemaforo("Verde.jpg");
         
@@ -200,7 +207,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
                     
                 } else {
                 
-                    tabla[i][j] = new JTextField("-");
+                    tabla[i][j] = new JTextField();
                     tabla[i][j].setBounds(20 + (j*80), 40 + (i*25), 70, 20);
                     
                     scrollPane.add(tabla[i][j]);
@@ -252,7 +259,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
                 }
 
                 tablaBloqueados[i][0].setText(temp.getLlave());
-                tablaBloqueados[i][1].setText(Integer.toString(temp.getLlegada()));
+                tablaBloqueados[i][1].setText(tablaBloqueados[i][1].getText() + "," + Integer.toString(temp.getLlegada()));
                 tablaBloqueados[i][2].setText(Integer.toString(temp.getRafaga()));
                 
                 temp = temp.getSiguiente();
@@ -268,11 +275,24 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
     
     public void llenarRestante(){
         
-        tabla[nodoEjecutado.getIndice()-1][3].setText(Integer.toString(nodoEjecutado.getComienzo()));
-        tabla[nodoEjecutado.getIndice()-1][4].setText(Integer.toString(nodoEjecutado.getFinalizacion()));
+        tabla[nodoEjecutado.getIndice()-1][3].setText(tabla[nodoEjecutado.getIndice()-1][3].getText() + "," + Integer.toString(nodoEjecutado.getComienzo()));
+        tabla[nodoEjecutado.getIndice()-1][4].setText(tabla[nodoEjecutado.getIndice()-1][4].getText() + "," +Integer.toString(nodoEjecutado.getFinalizacion()));
         tabla[nodoEjecutado.getIndice()-1][5].setText(Integer.toString(nodoEjecutado.getFinalizacion() - nodoEjecutado.getLlegada()));
-        tabla[nodoEjecutado.getIndice()-1][6].setText(Integer.toString(nodoEjecutado.getComienzo() - nodoEjecutado.getLlegada()));
- 
+        
+        String [] comienzos = tabla[nodoEjecutado.getIndice()-1][3].getText().split(","); 
+        String [] finales = tabla[nodoEjecutado.getIndice()-1][4].getText().split(","); 
+        finales[0] = "0";
+        String cadena = "";
+        
+        for(int i = 1; i<comienzos.length; i++){
+            
+            cadena = cadena + (Integer.parseInt(comienzos[i]) - Integer.parseInt(finales[i-1])) + ",";
+            
+        }
+          
+        tabla[nodoEjecutado.getIndice()-1][6].setText(cadena);
+        
+        
     }
     
     public void dibujarDiagrama(String nombre, int coorX, int coorY){
@@ -357,7 +377,22 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
             procesos = new Thread( this );
             procesos.start();  
             
-        } 
+        } else if(e.getSource() == botonBloquear){
+        
+            if(nodoEjecutado.getRafaga() != 0){
+            
+                filas++;
+                ingresar(nodoEjecutado.getLlave() + "*", nodoEjecutado.getRafaga(), tiempoGlobal, filas);
+                dibujarTabla(nodoEjecutado.getLlave() + "*", nodoEjecutado.getRafaga(), tiempoGlobal);
+                nodoEjecutado.setFinalizacion(tiempoGlobal);
+                llenarRestante();
+                cola.eliminar(cola.getCabeza());
+                llenarBloqueados();
+                nodoEjecutado = cola.getCabeza();
+                nodoEjecutado.setComienzo(tiempoGlobal);
+
+            }
+        }
         
     }
     
@@ -423,7 +458,7 @@ public class ProcesosExpulsion extends JFrame implements Runnable ,ActionListene
         
             System.out.print("No se que poner aca :D");
             
-        }
+        }  
     
     }
     
